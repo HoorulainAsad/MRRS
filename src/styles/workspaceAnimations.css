@@ -1,0 +1,290 @@
+/* SpaceFlow landing portal + Glassmorphism 2.0 auth surfaces.
+   Palette and glass recipes follow the supplied reference specification. */
+
+:root {
+  --forest: #354139;
+  --forest-deep: #202823;
+  --sage: #69766d;
+  --sage-soft: #e3e1d9;
+  --off-white: #f5f4f0;
+  --white: #ffffff;
+  --ink-dark: #202622;
+  --ink-muted: #646d66;
+  --terracotta: #b7775e;
+}
+
+/* ---- Glassmorphism 2.0 left tools panel ---- */
+.glass-tools-panel {
+  background: linear-gradient(
+    145deg,
+    rgba(250, 249, 246, 0.58) 0%,
+    rgba(214, 214, 205, 0.34) 100%
+  );
+  backdrop-filter: blur(22px) saturate(115%);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 24px 60px rgba(16, 36, 26, 0.25),
+    inset 0 1px 1px rgba(255, 255, 255, 0.85);
+}
+
+/* ---- Glassmorphism 2.0 right auth card ---- */
+.glass-auth-card {
+  background: rgba(248, 247, 243, 0.86);
+  backdrop-filter: blur(24px) saturate(115%);
+  -webkit-backdrop-filter: blur(24px) saturate(115%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 25px 65px rgba(16, 36, 26, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+/* ---- Translucent sage inputs ---- */
+.sage-glass-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(53, 65, 57, 0.2);
+  background: rgba(194, 198, 190, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ink-dark);
+  font-size: 14px;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sage-glass-input::placeholder {
+  color: var(--ink-muted);
+}
+
+.sage-glass-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.88);
+  border-color: var(--forest);
+  box-shadow: 0 0 0 3px rgba(53, 65, 57, 0.14);
+}
+
+/* ---- Open space card with sage glow ---- */
+.room-card-glow {
+  background: rgba(255, 255, 255, 0.66);
+  border: 1.5px solid rgba(209, 211, 202, 0.95);
+  box-shadow:
+    0 0 24px rgba(119, 128, 117, 0.24),
+    inset 0 0 14px rgba(255, 255, 255, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.room-card-glow:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 30px rgba(119, 128, 117, 0.34),
+    inset 0 0 18px rgba(255, 255, 255, 0.6);
+}
+
+.room-card-glow.is-pulsing {
+  animation: desk-glow-pulse 1.5s ease-in-out;
+}
+
+@keyframes desk-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 24px rgba(119, 128, 117, 0.24),
+      inset 0 0 14px rgba(255, 255, 255, 0.45);
+  }
+  50% {
+    box-shadow:
+      0 0 38px rgba(119, 128, 117, 0.42),
+      inset 0 0 22px rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* ---- Plain frosted room card (reserved) ---- */
+.room-card-plain {
+  background: rgba(248, 247, 243, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.room-card-plain:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(16, 36, 26, 0.16);
+}
+
+/* ---- Forest pill submit ---- */
+.forest-pill-button {
+  border: none;
+  border-radius: 999px;
+  background: var(--forest);
+  color: var(--white);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  box-shadow: 0 12px 26px rgba(24, 30, 26, 0.24);
+}
+
+.forest-pill-button:hover:not(:disabled) {
+  background: var(--forest-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(24, 30, 26, 0.3);
+}
+
+.forest-pill-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.forest-pill-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.landing-door-trigger {
+  width: clamp(280px, 32vw, 460px);
+  height: min(82vh, 680px);
+  cursor: pointer;
+  perspective: 1000px;
+  transition: filter 0.25s ease;
+}
+
+.landing-door-trigger:hover {
+  filter: brightness(1.06);
+}
+
+html.landing-scroll-snap {
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: 0;
+}
+
+.landing-scroll-snap-marker {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 100vh;
+  opacity: 0;
+  pointer-events: none;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+@media (max-width: 767px) {
+  .landing-door-trigger {
+    width: clamp(230px, 30vw, 320px);
+    height: min(62vh, 460px);
+  }
+
+}
+
+.spaceflow-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.spaceflow-dot-sage {
+  animation: spaceflow-dot-sage-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.spaceflow-dot-second {
+  animation: spaceflow-dot-second-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.spaceflow-dot-third {
+  animation: spaceflow-dot-third-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.spaceflow-dot-fourth {
+  animation: spaceflow-dot-fourth-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes spaceflow-dot-sage-sequence {
+  0%, 100% { transform: translate(0, 0) scale(1, 1); }
+  7.5% { transform: translate(7px, 0) scale(1.55, 1); }
+  15% { transform: translate(14px, 0) scale(1, 1); }
+  22.5% { transform: translate(14px, 7px) scale(1, 1.55); }
+  30% { transform: translate(14px, 14px) scale(1, 1); }
+  37.5% { transform: translate(7px, 14px) scale(1.55, 1); }
+  45% { transform: translate(0, 14px) scale(1, 1); }
+  52.5% { transform: translate(7px, 14px) scale(1.55, 1); }
+  60% { transform: translate(14px, 14px) scale(1, 1); }
+  67.5% { transform: translate(14px, 7px) scale(1, 1.55); }
+  75% { transform: translate(14px, 0) scale(1, 1); }
+  82.5% { transform: translate(7px, 0) scale(1.55, 1); }
+  90% { transform: translate(0, 0) scale(1, 1); }
+}
+
+@keyframes spaceflow-dot-second-sequence {
+  0%, 90%, 100% { transform: translate(0, 0) scale(1, 1); }
+  7.5%, 82.5% { transform: translate(-7px, 0) scale(1.55, 1); }
+  15%, 75% { transform: translate(-14px, 0) scale(1, 1); }
+}
+
+@keyframes spaceflow-dot-third-sequence {
+  0%, 15%, 75%, 100% { transform: translate(0, 0) scale(1, 1); }
+  22.5%, 67.5% { transform: translate(0, -7px) scale(1, 1.55); }
+  30%, 60% { transform: translate(0, -14px) scale(1, 1); }
+}
+
+@keyframes spaceflow-dot-fourth-sequence {
+  0%, 30%, 60%, 100% { transform: translate(0, 0) scale(1, 1); }
+  37.5%, 52.5% { transform: translate(7px, 0) scale(1.55, 1); }
+  45% { transform: translate(14px, 0) scale(1, 1); }
+}
+
+/* ---- Landing ambience ---- */
+.landing-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+.scroll-hint-chevron {
+  animation: hint-bob 1.8s ease-in-out infinite;
+}
+
+@keyframes hint-bob {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50% { transform: translateY(6px); opacity: 0.5; }
+}
+
+/* ---- Themed scrollbar for the portal + auth scroll regions ---- */
+.portal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sage) rgba(244, 247, 244, 0.4);
+}
+
+.portal-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.portal-scroll::-webkit-scrollbar-track {
+  background: rgba(244, 247, 244, 0.4);
+}
+
+.portal-scroll::-webkit-scrollbar-thumb {
+  background: var(--sage);
+  border-radius: 999px;
+}
+
+.portal-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--forest);
+}
+
+/* ---- Intro loader ---- */
+.intro-loader-bar {
+  transform-origin: left center;
+  animation: intro-load 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes intro-load {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint-chevron,
+  .room-card-glow.is-pulsing,
+  .spaceflow-dot {
+    animation: none;
+  }
+}

@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Avenir Next", "Segoe UI", sans-serif;
+
+  /* ── Original sage palette (kept for legacy pages) ── */
+  --color-sage-50: #f5f7f1;
+  --color-sage-100: #eaf0e4;
+  --color-sage-200: #d8e3d1;
+  --color-sage-400: #9aaf91;
+  --color-sage-500: #7f9a76;
+  --color-sage-600: #627f5c;
+  --color-sage-700: #496544;
+  --color-sage-800: #36513b;
+  --color-sage-900: #293e30;
+  --color-canvas: #f7f8f3;
+  --color-surface: #ffffff;
+  --color-line: #e4e8e1;
+
+  /* ── NEW brand palette ── */
+  /* Deep forest green  – primary brand, main CTAs */
+  --color-forest-50:  #eaf3ec;
+  --color-forest-100: #c6e1ca;
+  --color-forest-200: #9fcba5;
+  --color-forest-500: #2e6b45;
+  --color-forest-700: #203D30;
+  --color-forest-900: #162b22;
+
+  /* Navy blue – sidebar, headings, selected elements */
+  --color-navy-50:  #edf0f4;
+  --color-navy-100: #c9d2de;
+  --color-navy-200: #a4b4c8;
+  --color-navy-500: #3d5570;
+  --color-navy-700: #26364A;
+  --color-navy-900: #1a2535;
+
+  /* Warm off-white – page canvas */
+  --color-warm-canvas: #F7F8F4;
+
+  /* Soft sage – highlights, selected states */
+  --color-sage-soft: #E8EEE4;
+
+  /* Muted amber – pending status */
+  --color-amber-warm: #E5B45B;
+  --color-amber-light: #fdf3e0;
+
+  /* Soft red – rejected / cancelled */
+  --color-red-soft: #D97777;
+  --color-red-light: #fdf0f0;
+
+  /* Success green */
+  --color-green-soft: #5aa66b;
+  --color-green-light: #edf5ef;
+
+  /* ── Legacy names kept for un-redesigned pages ── */
+  --color-navy-950: #1a2535;
+  --color-navy-800: #2f4160;
+  --color-navy-700: #26364A;
+  --color-brand-700: #203D30;
+  --color-brand-600: #2e6b45;
+  --color-brand-500: #4a8c5c;
+  --color-brand-100: #c6e1ca;
+  --color-brand-50:  #eaf3ec;
+  --color-mist-50:  #F7F8F4;
+  --color-mist-100: #eef1ec;
+  --color-mist-200: #dde3d8;
+  --color-ink-900: #1e2a24;
+  --color-ink-600: #4a5a52;
+  --color-ink-500: #637068;
+
+  /* ── Shadows ── */
+  --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-card: 0 4px 16px -4px rgb(0 0 0 / 0.08), 0 1px 3px 0 rgb(0 0 0 / 0.04);
+  --shadow-lift: 0 12px 32px -8px rgb(0 0 0 / 0.14);
+  --shadow-modal: 0 24px 60px -12px rgb(0 0 0 / 0.22);
+}
+
+:root {
+  font-family: var(--font-sans);
+  color: var(--color-ink-900);
+  background: var(--color-warm-canvas);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: light;
+  --canvas: var(--color-warm-canvas);
+  --surface: var(--color-surface);
+  --line: var(--color-line);
+  --focus-ring: #2e6b45;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 360px;
+  background: var(--canvas);
+}
+
+body {
+  margin: 0;
+  min-width: 360px;
+  min-height: 100vh;
+  background: var(--canvas);
+}
+
+/* ── Sidebar scroll ── */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c8d1ca transparent;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+::selection {
+  color: var(--color-sage-900);
+  background: var(--color-sage-200);
+}
+
+.surface-grid {
+  background-image:
+    linear-gradient(rgb(73 101 68 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(73 101 68 / 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.glass-panel {
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.sidebar-scroll,
+.chat-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #bcc9b5 transparent;
+}
+
+.chat-scroll {
+  scroll-behavior: smooth;
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: #e9ede4;
+}
+
+.skeleton-shimmer::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.8), transparent);
+  animation: shimmer 1.6s infinite;
+}
+
+.robot-float {
+  animation: robot-float 4s ease-in-out infinite;
+}
+
+.robot-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: robot-blink 5s infinite;
+}
+
+.robot-thinking .robot-antenna-light {
+  animation: antenna-pulse 1s ease-in-out infinite alternate;
+}
+
+.robot-responding .robot-mouth {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: robot-talk 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes robot-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes robot-blink {
+  0%, 45%, 49%, 100% { transform: scaleY(1); }
+  47% { transform: scaleY(0.08); }
+}
+
+@keyframes antenna-pulse {
+  from { opacity: 0.45; }
+  to { opacity: 1; }
+}
+
+@keyframes robot-talk {
+  from { transform: scaleY(0.55); }
+  to { transform: scaleY(1.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within,
+  .chat-scroll {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
