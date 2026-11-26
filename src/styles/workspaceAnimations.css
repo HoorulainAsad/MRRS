@@ -1,55 +1,107 @@
-/* SpaceFlow landing portal + Glassmorphism 2.0 auth surfaces.
-   Palette and glass recipes follow the supplied reference specification. */
+/* SpaceFlow design tokens (60-30-10 rule), architectural stages, and Glassmorphism 2.0 surfaces. */
 
 :root {
-  --forest: #354139;
-  --forest-deep: #202823;
-  --sage: #69766d;
-  --sage-soft: #e3e1d9;
-  --off-white: #f5f4f0;
-  --white: #ffffff;
-  --ink-dark: #202622;
-  --ink-muted: #646d66;
-  --terracotta: #b7775e;
+  /* Legacy aliases preserved for existing app views & tests */
+  --forest: #203D30;
+  --forest-deep: #162B22;
+  --sage: #69766D;
+  --sage-soft: #E8EEE4;
+  --off-white: #F7F8F4;
+  --white: #FFFFFF;
+  --ink-dark: #1E2A24;
+  --ink-muted: #5C6860;
+  --terracotta: #B7775E;
+
+  /* SpaceFlow 60-30-10 System Tokens */
+  --sf-canvas: #F7F8F4;         /* 60% Primary warm off-white base */
+  --sf-surface: #FFFFFF;        /* 60% Elevated crisp surface */
+  --sf-plaster: #EFECE4;        /* 60% Warm architectural plaster */
+  --sf-sage-soft: #E8EEE4;      /* 30% Soft sage supporting surface */
+  --sf-sage-line: #D5DDD0;      /* 30% Subtle sage divider */
+  --sf-navy: #26364A;           /* 30% Deep slate navy headings */
+  --sf-ink: #1E2A24;            /* 30% Primary dark ink */
+  --sf-ink-muted: #5C6860;      /* 30% Secondary muted ink */
+  --sf-forest: #203D30;         /* 10% Primary forest green accent */
+  --sf-forest-hover: #2E6B45;   /* 10% Interactive forest highlight */
+  --sf-brass: #B7A98F;          /* 10% Architectural brass trim */
+
+  /* Glassmorphism 2.0 Tokens */
+  --sf-glass-bg: linear-gradient(
+    145deg,
+    rgba(247, 248, 244, 0.78) 0%,
+    rgba(232, 238, 228, 0.48) 100%
+  );
+  --sf-glass-card-bg: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.84) 0%,
+    rgba(247, 248, 244, 0.72) 100%
+  );
+  --sf-glass-border: rgba(255, 255, 255, 0.72);
+  --sf-glass-border-outer: rgba(32, 61, 48, 0.12);
+  --sf-glass-shadow:
+    0 24px 56px -12px rgba(22, 43, 34, 0.18),
+    0 4px 16px -4px rgba(22, 43, 34, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 1px 0 0 rgba(255, 255, 255, 0.45);
+}
+
+/* ---- Floating Glass Navigation (V10-inspired, SpaceFlow neutral palette) ---- */
+.floating-glass-nav {
+  background: linear-gradient(
+    135deg,
+    rgba(247, 248, 244, 0.82) 0%,
+    rgba(232, 238, 228, 0.68) 100%
+  );
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 14px 36px -10px rgba(22, 43, 34, 0.16),
+    0 2px 8px -2px rgba(22, 43, 34, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 /* ---- Glassmorphism 2.0 left tools panel ---- */
 .glass-tools-panel {
   background: linear-gradient(
     145deg,
-    rgba(250, 249, 246, 0.58) 0%,
-    rgba(214, 214, 205, 0.34) 100%
+    rgba(247, 248, 244, 0.68) 0%,
+    rgba(225, 230, 220, 0.42) 100%
   );
-  backdrop-filter: blur(22px) saturate(115%);
-  -webkit-backdrop-filter: blur(22px) saturate(115%);
+  backdrop-filter: blur(26px) saturate(120%);
+  -webkit-backdrop-filter: blur(26px) saturate(120%);
   border: 1px solid rgba(255, 255, 255, 0.72);
   box-shadow:
-    0 24px 60px rgba(16, 36, 26, 0.25),
-    inset 0 1px 1px rgba(255, 255, 255, 0.85);
+    0 28px 64px -12px rgba(22, 43, 34, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 1px 0 0 rgba(255, 255, 255, 0.45);
 }
 
 /* ---- Glassmorphism 2.0 right auth card ---- */
 .glass-auth-card {
-  background: rgba(248, 247, 243, 0.86);
-  backdrop-filter: blur(24px) saturate(115%);
-  -webkit-backdrop-filter: blur(24px) saturate(115%);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: var(--sf-glass-card-bg);
+  backdrop-filter: blur(28px) saturate(120%);
+  -webkit-backdrop-filter: blur(28px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.86);
   box-shadow:
-    0 25px 65px rgba(16, 36, 26, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+    0 28px 68px -14px rgba(22, 43, 34, 0.22),
+    0 4px 16px -4px rgba(22, 43, 34, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(32, 61, 48, 0.06);
 }
 
 /* ---- Translucent sage inputs ---- */
 .sage-glass-input {
   width: 100%;
   padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(53, 65, 57, 0.2);
-  background: rgba(194, 198, 190, 0.28);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(32, 61, 48, 0.16);
+  background: rgba(232, 238, 228, 0.42);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--ink-dark);
   font-size: 14px;
+  box-shadow: inset 0 1px 2px rgba(22, 43, 34, 0.04);
   transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -59,26 +111,29 @@
 
 .sage-glass-input:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.92);
   border-color: var(--forest);
-  box-shadow: 0 0 0 3px rgba(53, 65, 57, 0.14);
+  box-shadow:
+    0 0 0 3px rgba(32, 61, 48, 0.14),
+    inset 0 1px 2px rgba(22, 43, 34, 0.03);
 }
 
-/* ---- Open space card with sage glow ---- */
+/* ---- Open space card with subtle glass refraction ---- */
 .room-card-glow {
-  background: rgba(255, 255, 255, 0.66);
-  border: 1.5px solid rgba(209, 211, 202, 0.95);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.88);
   box-shadow:
-    0 0 24px rgba(119, 128, 117, 0.24),
-    inset 0 0 14px rgba(255, 255, 255, 0.45);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+    0 8px 24px -6px rgba(32, 61, 48, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
 .room-card-glow:hover {
   transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.84);
   box-shadow:
-    0 0 30px rgba(119, 128, 117, 0.34),
-    inset 0 0 18px rgba(255, 255, 255, 0.6);
+    0 14px 30px -8px rgba(32, 61, 48, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
 .room-card-glow.is-pulsing {
@@ -88,26 +143,29 @@
 @keyframes desk-glow-pulse {
   0%, 100% {
     box-shadow:
-      0 0 24px rgba(119, 128, 117, 0.24),
-      inset 0 0 14px rgba(255, 255, 255, 0.45);
+      0 8px 24px -6px rgba(32, 61, 48, 0.14),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
   50% {
     box-shadow:
-      0 0 38px rgba(119, 128, 117, 0.42),
-      inset 0 0 22px rgba(255, 255, 255, 0.7);
+      0 0 0 4px rgba(32, 61, 48, 0.18),
+      0 14px 32px -6px rgba(32, 61, 48, 0.26);
   }
 }
 
 /* ---- Plain frosted room card (reserved) ---- */
 .room-card-plain {
-  background: rgba(248, 247, 243, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(247, 248, 244, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 6px 18px -6px rgba(22, 43, 34, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .room-card-plain:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(16, 36, 26, 0.16);
+  box-shadow: 0 12px 28px -8px rgba(22, 43, 34, 0.16);
 }
 
 /* ---- Forest pill submit ---- */
@@ -119,13 +177,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
-  box-shadow: 0 12px 26px rgba(24, 30, 26, 0.24);
+  box-shadow: 0 10px 24px -6px rgba(22, 43, 34, 0.34);
 }
 
 .forest-pill-button:hover:not(:disabled) {
-  background: var(--forest-deep);
+  background: var(--sf-forest-hover);
   transform: translateY(-1px);
-  box-shadow: 0 16px 32px rgba(24, 30, 26, 0.3);
+  box-shadow: 0 14px 28px -6px rgba(22, 43, 34, 0.4);
 }
 
 .forest-pill-button:active:not(:disabled) {
@@ -137,61 +195,69 @@
   cursor: not-allowed;
 }
 
-.landing-door-trigger {
-  width: clamp(280px, 32vw, 460px);
-  height: min(82vh, 680px);
-  cursor: pointer;
-  perspective: 1000px;
-  transition: filter 0.25s ease;
+/* ---- Architectural Arch & Door Stage ---- */
+.arch-stage-frame {
+  position: relative;
+  width: max(100vw, calc(100vh * 1363 / 768));
+  height: max(100vh, calc(100vw * 768 / 1363));
+  flex-shrink: 0;
 }
 
-.landing-door-trigger:hover {
-  filter: brightness(1.06);
+.door-stage-frame {
+  position: relative;
+  width: max(100vw, calc(100vh * 16 / 9));
+  height: max(100vh, calc(100vw * 9 / 16));
+  flex-shrink: 0;
 }
 
-html.landing-scroll-snap {
-  scroll-snap-type: y mandatory;
-  scroll-padding-top: 0;
-}
-
-.landing-scroll-snap-marker {
+.door-hotspot {
   position: absolute;
-  left: 0;
-  width: 1px;
-  height: 100vh;
-  opacity: 0;
-  pointer-events: none;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  left: 56.4%;
+  top: 10.2%;
+  width: 18.6%;
+  height: 75.5%;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s ease;
 }
 
-@media (max-width: 767px) {
-  .landing-door-trigger {
-    width: clamp(230px, 30vw, 320px);
-    height: min(62vh, 460px);
-  }
-
+.door-hotspot:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
+.door-hotspot:focus-visible {
+  outline: 3px solid var(--sf-forest);
+  outline-offset: 4px;
+}
+
+/* ---- Logo dot mark animations ---- */
 .spaceflow-dot {
   transform-box: fill-box;
   transform-origin: center;
 }
 
-.spaceflow-dot-sage {
-  animation: spaceflow-dot-sage-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-.spaceflow-dot-second {
-  animation: spaceflow-dot-second-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-.spaceflow-dot-third {
-  animation: spaceflow-dot-third-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-.spaceflow-dot-fourth {
-  animation: spaceflow-dot-fourth-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+@media (prefers-reduced-motion: no-preference) {
+  .spaceflow-dot-sage {
+    animation: spaceflow-dot-sage-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  .spaceflow-dot-second {
+    animation: spaceflow-dot-second-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  .spaceflow-dot-third {
+    animation: spaceflow-dot-third-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  .spaceflow-dot-fourth {
+    animation: spaceflow-dot-fourth-sequence 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  .scroll-hint-chevron {
+    animation: hint-bob 1.8s ease-in-out infinite;
+  }
+  .intro-loader-bar {
+    transform-origin: left center;
+    animation: intro-load 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
 }
 
 @keyframes spaceflow-dot-sage-sequence {
@@ -234,12 +300,8 @@ html.landing-scroll-snap {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
-}
-
-.scroll-hint-chevron {
-  animation: hint-bob 1.8s ease-in-out infinite;
 }
 
 @keyframes hint-bob {
@@ -270,21 +332,7 @@ html.landing-scroll-snap {
   background: var(--forest);
 }
 
-/* ---- Intro loader ---- */
-.intro-loader-bar {
-  transform-origin: left center;
-  animation: intro-load 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
 @keyframes intro-load {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .scroll-hint-chevron,
-  .room-card-glow.is-pulsing,
-  .spaceflow-dot {
-    animation: none;
-  }
 }

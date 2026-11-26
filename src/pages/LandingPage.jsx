@@ -1,464 +1,417 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  AnimatePresence,
-  animate,
-  motion,
-  useMotionValue,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from 'framer-motion';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { ChevronDown, DoorOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Logo, SpaceFlowMark } from '../components/Logo';
+import { SpaceFlowMark } from '../components/Logo';
+import { AuthGlassPortal } from '../components/auth/AuthGlassPortal';
+import { FloatingGlassNav } from '../components/landing/FloatingGlassNav';
+import { OrbitFeatureCards } from '../components/landing/OrbitFeatureCards';
+import { LandingFooter } from '../components/landing/LandingFooter';
 import { useSession } from '../hooks/useSession';
-import { AuthPage } from './AuthPage';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const EASE = [0.22, 1, 0.36, 1];
-const STAGE_HEIGHT_VH = 320;
-const SNAP_POINTS = [0, 0.48, 0.84, 1];
-
-function BrandMark() {
-  return (
-    <span className="inline-flex items-center gap-3">
-      <span className="flex h-11 w-10 shrink-0 items-center justify-center">
-        <SpaceFlowMark className="h-7 w-7" />
-      </span>
-      <span className="text-xl font-semibold tracking-[-0.03em]" style={{ color: 'var(--ink-dark)' }}>
-        Space<span style={{ color: 'var(--sage)' }}>Flow</span>
-      </span>
-    </span>
-  );
-}
 
 function IntroLoader() {
   return (
     <motion.div
       className="fixed inset-0 z-[100] grid place-items-center"
-      style={{ background: 'var(--off-white)' }}
+      style={{ background: 'var(--sf-canvas)' }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: EASE }}
+      transition={{ duration: 0.45, ease: EASE }}
       role="status"
       aria-label="Loading SpaceFlow"
     >
       <div className="text-center">
-        <BrandMark />
-        <div className="mx-auto mt-7 h-[3px] w-52 overflow-hidden rounded-full" style={{ background: 'rgba(142,168,148,0.3)' }}>
-          <div className="intro-loader-bar h-full w-full rounded-full" style={{ background: 'var(--forest)' }} />
+        <span className="inline-flex items-center gap-3">
+          <span className="flex h-11 w-10 shrink-0 items-center justify-center">
+            <SpaceFlowMark className="h-7 w-7" />
+          </span>
+          <span className="text-xl font-semibold tracking-[-0.03em]" style={{ color: 'var(--sf-ink)' }}>
+            Space<span style={{ color: 'var(--sf-sage)' }}>Flow</span>
+          </span>
+        </span>
+        <div
+          className="mx-auto mt-6 h-[3px] w-52 overflow-hidden rounded-full"
+          style={{ background: 'rgba(32, 61, 48, 0.14)' }}
+        >
+          <div className="intro-loader-bar h-full w-full rounded-full" style={{ background: 'var(--sf-forest)' }} />
         </div>
-        <p className="mt-3 text-xs font-medium" style={{ color: 'var(--ink-muted)' }}>Preparing your workspace…</p>
+        <p className="mt-3 text-xs font-medium" style={{ color: 'var(--sf-ink-muted)' }}>
+          Preparing your workspace…
+        </p>
       </div>
     </motion.div>
   );
 }
 
-function StaticLanding() {
-  const navigate = useNavigate();
-  const { session } = useSession();
-  const [doorOpen, setDoorOpen] = useState(false);
-  const [openingDoor, setOpeningDoor] = useState(false);
-  const [authTransition, setAuthTransition] = useState(false);
-  const enterTimer = useRef(null);
-
-  useEffect(() => () => window.clearTimeout(enterTimer.current), []);
-
-  const openDoor = () => {
-    if (session) {
-      navigate('/app/dashboard');
-      return;
-    }
-    if (openingDoor) return;
-    setOpeningDoor(true);
-    setDoorOpen(true);
-    enterTimer.current = window.setTimeout(() => setAuthTransition(true), 500);
-  };
-
-  return (
-    <>
-    <main
-      className="relative grid min-h-screen place-items-center overflow-hidden px-6 py-20 text-white"
-      style={{
-        backgroundImage: 'linear-gradient(105deg, rgba(18,21,19,0.78) 0%, rgba(18,21,19,0.44) 55%, rgba(18,21,19,0.2) 100%), url("/images/landing-architecture-bg.jpg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <header className="absolute inset-x-0 top-0 z-10 mx-auto flex max-w-7xl px-5 py-4 sm:px-8">
-        <Logo to="/" />
-      </header>
-      <div className="relative z-[2] grid w-full max-w-6xl items-center gap-6 md:grid-cols-[minmax(0,1fr)_minmax(320px,460px)] md:gap-10">
-        <div className="mx-auto max-w-xl text-center md:mx-0 md:text-left">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#E1D8C8]">SpaceFlow · Shared workspaces</p>
-          <h1 className="mt-4 text-balance text-4xl font-bold leading-[1.05] tracking-[-0.04em] sm:text-5xl">Make room for your best work.</h1>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-white/80 sm:text-base sm:leading-7 md:mx-0">
-            Find a quiet desk for deep focus or the right meeting room for your next big idea.
-          </p>
-          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Click the closed door to continue</p>
-        </div>
-
-        <div className="mx-auto flex flex-col items-center">
-          <button
-            type="button"
-            onClick={openDoor}
-            className="landing-door-trigger relative block border-0 bg-transparent p-0 focus-visible:outline-offset-4"
-            aria-label={openingDoor ? 'Meeting room door opening' : 'Open the meeting room door'}
-          >
-            <img
-              src="/images/meeting-door-closed.png"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-contain"
-              style={{ opacity: doorOpen ? 0 : 1, transition: 'opacity 0.45s ease', filter: 'drop-shadow(0 24px 24px rgba(0,0,0,0.34))' }}
-            />
-            <img
-              src="/images/meeting-door-frame.png"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-contain"
-              style={{ opacity: doorOpen ? 1 : 0, transition: 'opacity 0.45s ease', filter: 'drop-shadow(0 24px 24px rgba(0,0,0,0.34))' }}
-            />
-          </button>
-          <p className="mb-0 mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">
-            {openingDoor ? 'Opening · taking you to sign in' : 'Meeting Room A'}
-            {!openingDoor ? <ArrowRight className="ml-2 inline h-3 w-3" aria-hidden="true" /> : null}
-          </p>
-        </div>
-      </div>
-    </main>
-    <AnimatePresence>
-      {authTransition ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: EASE }}
-          className="fixed inset-0 z-[110] overflow-auto"
-          style={{ pointerEvents: 'none' }}
-          onAnimationComplete={() => navigate('/login', { state: { skipEntrance: true } })}
-        >
-          <AuthPage skipEntrance />
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
-    </>
-  );
-}
-
-const STAGES = [
-  { label: 'The space', fraction: 0 },
-  { label: 'The door', fraction: 0.55 },
-  { label: 'Enter', fraction: 0.94 },
-];
-
-function ScrollPortal() {
-  const navigate = useNavigate();
-  const { session } = useSession();
-  const stageRef = useRef(null);
-  const authTimer = useRef(null);
-  const animations = useRef([]);
-  const entranceStarted = useRef(false);
-  const [openingDoor, setOpeningDoor] = useState(false);
-  const [authTransition, setAuthTransition] = useState(false);
-  const [activeStage, setActiveStage] = useState(0);
-  const [doorInteractive, setDoorInteractive] = useState(false);
-  const [headerInteractive, setHeaderInteractive] = useState(true);
-  const [viewport, setViewport] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
-  const { scrollYProgress } = useScroll({ target: stageRef, offset: ['start start', 'end end'] });
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, mass: 0.5 });
-
-  const clickDoorProgress = useMotionValue(0);
-  const walkThroughProgress = useMotionValue(0);
-
-  useEffect(() => {
-    const onResize = () => setViewport({ w: window.innerWidth, h: window.innerHeight });
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add('landing-scroll-snap');
-    window.scrollTo(0, 0);
-    return () => root.classList.remove('landing-scroll-snap');
-  }, []);
-
-  useEffect(() => () => {
-    window.clearTimeout(authTimer.current);
-    animations.current.forEach((control) => control.stop());
-  }, []);
-
-  const startEntrance = () => {
-    if (entranceStarted.current) return;
-    entranceStarted.current = true;
-    if (session) {
-      navigate('/app/dashboard');
-      return;
-    }
-
-    setOpeningDoor(true);
-    animations.current.push(animate(clickDoorProgress, 1, { duration: 0.72, ease: EASE }));
-    animations.current.push(animate(walkThroughProgress, 1, { delay: 0.72, duration: 1.1, ease: EASE }));
-    authTimer.current = window.setTimeout(() => setAuthTransition(true), 1830);
-  };
-
-  useMotionValueEvent(smoothProgress, 'change', (value) => {
-    setActiveStage(value < 0.48 ? 0 : value < 0.86 ? 1 : 2);
-    setDoorInteractive(value >= 0.46 && value < 0.95);
-    setHeaderInteractive(value < 0.86);
-    if (value >= 0.84) startEntrance();
-  });
-
-  // STAGE 1 — arch room reveal
-  const archStartW = Math.min(640, viewport.w * 0.88);
-  const archStartH = Math.min(620, viewport.h * 0.76);
-  const archWidth = useTransform(smoothProgress, [0, 0.35], [archStartW, viewport.w]);
-  const archHeight = useTransform(smoothProgress, [0, 0.35], [archStartH, viewport.h]);
-  const archRadius = useTransform(smoothProgress, [0, 0.35], [archStartW / 2, 0]);
-  const archScale = useTransform(smoothProgress, [0, 0.35], [0.92, 1]);
-  const archImageScale = useTransform(smoothProgress, [0, 0.38], [1, 1.24]);
-  const archOpacity = useTransform(smoothProgress, [0.3, 0.54], [1, 0]);
-  const heroCopyOpacity = useTransform(smoothProgress, [0, 0.22], [1, 0]);
-  const heroCopyY = useTransform(smoothProgress, [0, 0.22], [0, -36]);
-  const scrollHintOpacity = useTransform(smoothProgress, [0, 0.12], [1, 0]);
-
-  // STAGE 2 — door imagery crossfades from closed to open on click or scroll.
-  const doorSectionOpacity = useTransform(smoothProgress, [0.3, 0.46, 0.85, 0.94], [0, 1, 1, 0]);
-  const doorOpenProgressScroll = useTransform(smoothProgress, [0.7, 0.84], [0, 1]);
-  const doorOpenProgress = useTransform(
-    [doorOpenProgressScroll, clickDoorProgress],
-    ([scroll, click]) => Math.max(scroll, click),
-  );
-  const closedDoorOpacity = useTransform(doorOpenProgress, [0, 0.28, 0.72], [1, 1, 0]);
-  const openDoorOpacity = useTransform(doorOpenProgress, [0.28, 0.72, 1], [0, 1, 1]);
-  const closedDoorScale = useTransform(doorOpenProgress, [0, 1], [1, 0.96]);
-  const openDoorScale = useTransform(doorOpenProgress, [0, 1], [0.96, 1]);
-  const openDoorRotateY = useTransform(doorOpenProgress, [0.28, 0.72], [-104, 0]);
-  const doorWalkScale = useTransform(walkThroughProgress, [0, 0.7, 1], [1, 3.5, 8]);
-  const doorLayerOpacity = useTransform(walkThroughProgress, [0, 0.72, 0.96, 1], [1, 1, 0, 0]);
-  const compactDoorViewport = viewport.w < 768;
-  const doorButtonWidth = compactDoorViewport
-    ? Math.max(230, Math.min(viewport.w * 0.3, 320))
-    : Math.max(280, Math.min(viewport.w * 0.32, 460));
-  const doorButtonHeight = compactDoorViewport
-    ? Math.min(viewport.h * 0.62, 460)
-    : Math.min(viewport.h * 0.82, 680);
-  const doorArtworkWidth = Math.min(doorButtonWidth, doorButtonHeight * (441 / 1107));
-  const doorZoomOriginX = ((doorButtonWidth - doorArtworkWidth) / 2 + doorArtworkWidth * 0.845) / doorButtonWidth * 100;
-  const doorHingeOriginX = ((doorButtonWidth - doorArtworkWidth) / 2 + doorArtworkWidth * 0.06) / doorButtonWidth * 100;
-  const doorCameraScaleScroll = useTransform(smoothProgress, [0.62, 0.88], [1, 1.02]);
-  const doorCameraScale = doorCameraScaleScroll;
-
-  const headerOpacity = useTransform(smoothProgress, [0.78, 0.88], [1, 0]);
-
-  const scrollToFraction = (fraction) => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    const distance = stage.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: fraction * distance, behavior: 'smooth' });
-  };
-
-  const openDoor = () => {
-    startEntrance();
-  };
-
-  return (
-    <div ref={stageRef} className="relative" style={{ height: `${STAGE_HEIGHT_VH}vh` }}>
-      {SNAP_POINTS.map((fraction) => (
-        <div
-          key={fraction}
-          className="landing-scroll-snap-marker"
-          style={{ top: `${(STAGE_HEIGHT_VH - 100) * fraction}vh` }}
-          aria-hidden="true"
-        />
-      ))}
-      {/* Fixed chrome */}
-      <motion.div className="fixed inset-x-0 top-0 z-40 h-[3px]" style={{ scaleX: scrollYProgress, transformOrigin: 'left center', background: 'linear-gradient(90deg, var(--sage), var(--forest))' }} aria-hidden="true" />
-
-      <motion.header style={{ opacity: headerOpacity, pointerEvents: headerInteractive ? 'auto' : 'none' }} className="fixed inset-x-0 top-0 z-40">
-        <div className="mx-auto flex max-w-7xl items-center px-5 py-4 sm:px-8">
-          <Logo
-            to="/"
-            light={activeStage === 0}
-          />
-        </div>
-      </motion.header>
-
-      <motion.nav style={{ opacity: headerOpacity, pointerEvents: headerInteractive ? 'auto' : 'none' }} className="fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-4 md:flex" aria-label="Landing stages">
-        {STAGES.map((stage, index) => (
-          <button key={stage.label} type="button" onClick={() => scrollToFraction(stage.fraction)} className="group flex items-center gap-2" aria-label={`Go to ${stage.label}`} aria-current={activeStage === index ? 'step' : undefined}>
-            <span className="text-[10px] font-bold uppercase tracking-wider opacity-0 transition-opacity group-hover:opacity-100" style={{ color: 'var(--forest)' }}>{stage.label}</span>
-            <span className="block rounded-full transition-all" style={{ width: activeStage === index ? 12 : 8, height: activeStage === index ? 12 : 8, background: activeStage === index ? 'var(--forest)' : 'rgba(27,59,43,0.3)' }} />
-          </button>
-        ))}
-      </motion.nav>
-
-      {/* Sticky viewport */}
-      <div className="landing-grain sticky top-0 h-screen w-full overflow-hidden" style={{ background: 'var(--off-white)' }}>
-        <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
-          <img src="/images/landing-architecture-bg.jpg" alt="" className="h-full w-full object-cover" />
-        </div>
-        <motion.div
-          className="absolute inset-0 z-[1]"
-          style={{
-            opacity: doorSectionOpacity,
-            backgroundImage: 'linear-gradient(105deg, rgba(18,21,19,0.8) 0%, rgba(18,21,19,0.54) 52%, rgba(18,21,19,0.4) 100%), url("/images/workspace-hero.jpg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'saturate(0.55)',
-          }}
-          aria-hidden="true"
-        />
-
-        {/* STAGE 1 — arch reveal */}
-        <motion.section style={{ opacity: archOpacity, pointerEvents: 'none' }} className="absolute inset-0 z-[2] flex items-center justify-center">
-          <motion.div
-            style={{
-              width: archWidth,
-              height: archHeight,
-              scale: archScale,
-              borderTopLeftRadius: archRadius,
-              borderTopRightRadius: archRadius,
-              border: '8px solid #8C887D',
-              boxShadow: '0 24px 60px rgba(22,25,23,0.22), inset 0 0 0 1px rgba(255,255,255,0.22)',
-            }}
-            className="relative overflow-hidden"
-          >
-            <motion.img
-              src="/images/workspace-hero.jpg"
-              alt="Shared workspace and meeting room"
-              className="block h-full w-full object-cover"
-              style={{ scale: archImageScale, transformOrigin: 'center center' }}
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(9,12,11,0.4) 0%, rgba(9,12,11,0.58) 100%)' }} aria-hidden="true" />
-          </motion.div>
-
-          <div className="absolute inset-0 z-[3] grid place-items-center px-6 text-center text-white">
-            <motion.div style={{ opacity: heroCopyOpacity, y: heroCopyY }} className="w-full">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#D5C4A5' }} />
-                SpaceFlow · Shared workspaces
-              </span>
-              <h1 className="mx-auto mt-5 max-w-3xl text-balance font-bold leading-[1.05] tracking-[-0.04em]" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-                Make room for your best work.
-              </h1>
-              <p className="mx-auto mt-5 max-w-[510px] text-base leading-7 text-white/85 sm:text-lg">
-                Find a quiet desk for deep focus or the right meeting room for your next big idea.
-              </p>
-            </motion.div>
-          </div>
-
-          <motion.div style={{ opacity: scrollHintOpacity }} className="absolute bottom-7 left-1/2 z-[3] -translate-x-1/2 text-center" aria-hidden="true">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--ink-muted)' }}>Scroll to discover your space</span>
-            <ChevronDown className="scroll-hint-chevron mx-auto mt-1 h-5 w-5" style={{ color: 'var(--ink-muted)' }} />
-          </motion.div>
-        </motion.section>
-
-        {/* STAGE 2 — meeting room door */}
-        <motion.section
-          style={{ opacity: doorSectionOpacity, scale: doorCameraScale, pointerEvents: doorInteractive ? 'auto' : 'none', perspective: 1600 }}
-          className="absolute inset-0 z-[4] grid place-items-center overflow-hidden px-4 py-4 sm:px-8 sm:py-6 lg:px-14"
-        >
-          <div className="grid w-full max-w-6xl items-center gap-3 md:grid-cols-[minmax(0,1fr)_minmax(320px,460px)] md:gap-10">
-            <div className="mx-auto max-w-xl text-center md:mx-0 md:text-left">
-              <span className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#E1D8C8]">
-                <span className="h-px w-8 bg-[#B7A98F]" />
-                Your space is ready
-              </span>
-              <h2 className="mt-3 text-balance font-bold leading-[1.04] tracking-[-0.035em] text-white sm:mt-4" style={{ fontSize: 'clamp(1.8rem, 4.7vw, 4.1rem)' }}>
-                One door away from a better workday.
-              </h2>
-              <p className="mx-auto mt-3 max-w-lg text-[13px] leading-5 text-white/75 sm:mt-5 sm:text-base sm:leading-7 md:mx-0">
-                Open the meeting room door to sign in, book a shared desk, and find the space that fits your day.
-              </p>
-              <div className="mt-7 hidden flex-wrap gap-2.5 md:flex">
-                {['Meeting rooms', 'Flexible desks', 'Simple reservations'].map((feature) => (
-                  <span key={feature} className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-medium text-white/85 backdrop-blur-sm">
-                    {feature}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative mx-auto flex flex-col items-center">
-              <motion.button
-                type="button"
-                onClick={openDoor}
-                aria-label={openingDoor ? 'Meeting room door opening' : 'Open the meeting room door'}
-                className="landing-door-trigger relative block border-0 bg-transparent p-0 focus-visible:outline-offset-4"
-                style={{ scale: doorWalkScale, opacity: doorLayerOpacity, transformOrigin: `${doorZoomOriginX}% 50%` }}
-              >
-                <motion.img
-                  src="/images/meeting-door-closed.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 h-full w-full object-contain"
-                  style={{
-                    opacity: closedDoorOpacity,
-                    scale: closedDoorScale,
-                    backfaceVisibility: 'hidden',
-                    transformOrigin: `${doorHingeOriginX}% center`,
-                    filter: 'drop-shadow(0 24px 24px rgba(0,0,0,0.34))',
-                  }}
-                />
-                <motion.img
-                  src="/images/meeting-door-frame.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 h-full w-full object-contain"
-                  style={{
-                    opacity: openDoorOpacity,
-                    scale: openDoorScale,
-                    rotateY: openDoorRotateY,
-                    backfaceVisibility: 'hidden',
-                    transformOrigin: `${doorHingeOriginX}% center`,
-                    filter: 'drop-shadow(0 24px 24px rgba(0,0,0,0.34))',
-                  }}
-                />
-              </motion.button>
-              <p className="mb-0 mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">
-                {openingDoor ? 'Opening · taking you to sign in' : 'Click the door to continue'}
-                {!openingDoor ? <ArrowRight className="ml-2 inline h-3 w-3" aria-hidden="true" /> : null}
-              </p>
-            </div>
-          </div>
-        </motion.section>
-
-      </div>
-      <AnimatePresence>
-        {authTransition ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, ease: EASE }}
-            className="fixed inset-0 z-[110] overflow-auto"
-            style={{ pointerEvents: 'none' }}
-            onAnimationComplete={() => navigate('/login', { state: { skipEntrance: true } })}
-          >
-            <AuthPage skipEntrance />
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </div>
-  );
-}
-
 export function LandingPage() {
   const reduceMotion = useReducedMotion();
+  const navigate = useNavigate();
+  const { session } = useSession();
+
+  const rootRef = useRef(null);
+  const journeyPinRef = useRef(null);
+  const journeyTriggerRef = useRef(null);
+
   const [introDone, setIntroDone] = useState(Boolean(reduceMotion));
+  const [activeSection, setActiveSection] = useState('hero-arch');
+  const [doorClickedOpen, setDoorClickedOpen] = useState(false);
+  const [doorInteractive, setDoorInteractive] = useState(false);
 
   useEffect(() => {
     if (reduceMotion) return undefined;
-    const timer = window.setTimeout(() => setIntroDone(true), 1500);
+    const timer = window.setTimeout(() => setIntroDone(true), 1250);
     return () => window.clearTimeout(timer);
   }, [reduceMotion]);
 
-  if (reduceMotion) return <StaticLanding />;
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+
+    const ctx = gsap.context(() => {
+      // ── UNIFIED SEAMLESS ARCHITECTURAL JOURNEY (Hero Arch -> Door Entrance) ──
+      // Single pinned container eliminates white gaps/flashes between sections.
+      const journeyTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: journeyPinRef.current,
+          start: 'top top',
+          end: '+=240%',
+          pin: true,
+          scrub: 0.9,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const p = self.progress;
+            setDoorInteractive(p >= 0.44);
+            if (p < 0.44) {
+              setActiveSection('hero-arch');
+            } else {
+              setActiveSection('door-entrance');
+            }
+          },
+        },
+      });
+
+      journeyTriggerRef.current = journeyTl.scrollTrigger;
+
+      // 1) Hero Arch Reveal (0.00 -> 0.44)
+      journeyTl
+        .to('.hero-copy-layer', { opacity: 0, y: -24, duration: 0.14, ease: 'power2.out' }, 0)
+        .to('.hero-scroll-hint', { opacity: 0, y: 10, duration: 0.1, ease: 'power1.out' }, 0)
+        .to(
+          '.arch-camera-rig',
+          {
+            scale: 2.75,
+            transformOrigin: '50% 51%',
+            duration: 0.44,
+            ease: 'power2.inOut',
+          },
+          0.02,
+        )
+        // 2) Seamless direct crossfade into Door Room (0.40 -> 0.50) — zero white gap
+        .to('.door-stage-wrapper', { opacity: 1, duration: 0.12, ease: 'power1.inOut' }, 0.38)
+        // 3) Door Open + Camera Dolly Through Doorway (0.50 -> 0.98)
+        .to('.door-open-layer', { opacity: 1, duration: 0.16, ease: 'power2.inOut' }, 0.50)
+        .to('.door-wall-copy', { opacity: 0, y: -18, duration: 0.14, ease: 'power2.out' }, 0.54)
+        .to(
+          '.door-camera-rig',
+          {
+            scale: 2.85,
+            transformOrigin: '65.6% 49%',
+            duration: 0.36,
+            ease: 'power2.inOut',
+          },
+          0.60,
+        )
+        .to('.door-dark-veil', { opacity: 1, duration: 0.12, ease: 'power1.in' }, 0.88);
+
+      // ── Section active-tab tracking for Login & Capabilities ──
+      ScrollTrigger.create({
+        trigger: '#portal-login',
+        start: 'top 55%',
+        end: 'bottom 55%',
+        onEnter: () => setActiveSection('portal-login'),
+        onEnterBack: () => setActiveSection('portal-login'),
+      });
+
+      ScrollTrigger.create({
+        trigger: '#capabilities',
+        start: 'top 55%',
+        end: 'bottom bottom',
+        onEnter: () => setActiveSection('capabilities'),
+        onEnterBack: () => setActiveSection('capabilities'),
+      });
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, [reduceMotion]);
+
+  const navigateToSection = (id) => {
+    if (!reduceMotion && journeyTriggerRef.current) {
+      const st = journeyTriggerRef.current;
+      if (id === 'hero-arch') {
+        window.scrollTo({ top: st.start, behavior: 'smooth' });
+        return;
+      }
+      if (id === 'door-entrance') {
+        const doorScrollY = st.start + (st.end - st.start) * 0.50;
+        window.scrollTo({ top: doorScrollY, behavior: 'smooth' });
+        return;
+      }
+    }
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  };
+
+  const handleDoorClick = () => {
+    if (session) {
+      navigate('/app/dashboard');
+      return;
+    }
+    if (!doorClickedOpen) {
+      setDoorClickedOpen(true);
+      window.setTimeout(() => {
+        navigateToSection('portal-login');
+      }, 650);
+    } else {
+      navigateToSection('portal-login');
+    }
+  };
 
   return (
-    <>
+    <div ref={rootRef} className="relative min-h-screen overflow-x-clip" style={{ background: 'var(--sf-canvas)' }}>
       <AnimatePresence>{!introDone ? <IntroLoader /> : null}</AnimatePresence>
-      <ScrollPortal />
-    </>
+
+      {/* PHASE 7: Floating Glass Navigation */}
+      <FloatingGlassNav
+        activeSection={activeSection}
+        onNavigateSection={navigateToSection}
+        session={session}
+      />
+
+      {/* ════════════════════════════════════════════════════════════════════════
+          UNIFIED ARCHITECTURAL JOURNEY (Hero Arch + Door Entrance)
+          Eliminates any white flash or gap between pinned scenes.
+         ════════════════════════════════════════════════════════════════════════ */}
+      <div
+        id="hero-arch"
+        ref={journeyPinRef}
+        className="relative h-screen w-full overflow-hidden"
+        style={{ background: 'var(--sf-plaster)' }}
+      >
+        {/* ── STAGE 1: HERO ARCHITECTURAL ARCH ── */}
+        <section
+          aria-label="SpaceFlow architectural lounge entrance"
+          className="landing-grain absolute inset-0 z-[1] flex items-center justify-center overflow-hidden"
+        >
+          <div className="arch-camera-rig arch-stage-frame">
+            {/* Outer Plaster Wall */}
+            <img
+              src="/images/landing-architecture-bg.jpg"
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+              style={{ zIndex: 0 }}
+            />
+
+            {/* Semicircular Arch Opening with Symmetrical Architectural Depth */}
+            <div
+              className="absolute overflow-hidden"
+              style={{
+                left: '33.8%',
+                top: '19.4%',
+                width: '32.4%',
+                height: '64.7%',
+                borderRadius: '50% 50% 0 0 / 44.4% 44.4% 0 0',
+                zIndex: 1,
+              }}
+            >
+              <img
+                src="/images/workspace-hero.jpg"
+                alt="Sunlit SpaceFlow shared workspace lounge seen through an architectural arch"
+                className="arch-lounge-img h-full w-full object-cover"
+                style={{ imageRendering: 'high-quality' }}
+              />
+              {/* Symmetrical left, right, and top recessed arch jamb shadows */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  borderRadius: 'inherit',
+                  boxShadow:
+                    'inset 14px 0 26px -6px rgba(18, 26, 22, 0.40), inset -14px 0 26px -6px rgba(18, 26, 22, 0.40), inset 0 22px 36px -8px rgba(18, 26, 22, 0.44), inset 0 0 0 1.5px rgba(255, 255, 255, 0.30)',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Hero Typography Overlay */}
+          <div className="hero-copy-layer pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center">
+            <div
+              className="max-w-2xl rounded-3xl px-6 py-7 sm:px-10 sm:py-9"
+              style={{
+                background: 'linear-gradient(155deg, rgba(247, 248, 244, 0.80) 0%, rgba(232, 238, 228, 0.58) 100%)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(255, 255, 255, 0.78)',
+                boxShadow: '0 24px 56px -14px rgba(22, 43, 34, 0.18)',
+              }}
+            >
+              <span
+                className="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em]"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.72)',
+                  borderColor: 'var(--sf-sage-line)',
+                  color: 'var(--sf-forest)',
+                }}
+              >
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--sf-forest)' }} />
+                SpaceFlow · Workspace Scheduling
+              </span>
+              <h1
+                className="mt-5 text-balance font-bold leading-[1.04] tracking-[-0.04em]"
+                style={{ fontSize: 'clamp(2rem, 4.8vw, 3.6rem)', color: 'var(--sf-navy)' }}
+              >
+                Make room for your best work.
+              </h1>
+              <p
+                className="mx-auto mt-4 max-w-lg text-sm leading-6 sm:text-base sm:leading-7"
+                style={{ color: 'var(--sf-ink-muted)' }}
+              >
+                Reserve meeting rooms, shared desks, and workspace resources managed by your organization.
+              </p>
+            </div>
+          </div>
+
+          {/* Scroll Hint */}
+          <div
+            className="hero-scroll-hint pointer-events-none absolute bottom-7 left-1/2 z-10 -translate-x-1/2 text-center"
+            aria-hidden="true"
+          >
+            <span
+              className="rounded-full px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em]"
+              style={{
+                background: 'rgba(247, 248, 244, 0.82)',
+                color: 'var(--sf-forest)',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              Scroll to enter
+            </span>
+            <ChevronDown className="scroll-hint-chevron mx-auto mt-1.5 h-5 w-5" style={{ color: 'var(--sf-forest)' }} />
+          </div>
+        </section>
+
+        {/* ── STAGE 2: ARCHITECTURAL DOOR ENTRANCE (crossfades seamlessly over Stage 1) ── */}
+        <section
+          id="door-entrance"
+          aria-label="Meeting room architectural entrance"
+          className="door-stage-wrapper absolute inset-0 z-[15] flex items-center justify-center overflow-hidden"
+          style={{
+            opacity: reduceMotion ? 1 : 0,
+            pointerEvents: reduceMotion || doorInteractive ? 'auto' : 'none',
+            position: reduceMotion ? 'relative' : 'absolute',
+            height: '100vh',
+          }}
+        >
+          <div className="door-camera-rig door-stage-frame" style={{ perspective: 1200 }}>
+            <img
+              src="/images/door-scene-closed.jpg"
+              alt="Architectural room with a closed forest-green and brass meeting room door"
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+              style={{ imageRendering: 'high-quality' }}
+            />
+
+            <img
+              src="/images/door-scene-open.png"
+              alt="Architectural room with the meeting room door open into the workspace"
+              className="door-open-layer pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-500"
+              style={{ opacity: doorClickedOpen ? 1 : 0, imageRendering: 'high-quality' }}
+            />
+
+            <button
+              type="button"
+              onClick={handleDoorClick}
+              className="door-hotspot"
+              aria-label={doorClickedOpen ? 'Step through the open meeting room door to sign in' : 'Click to open the meeting room door'}
+            >
+              <span className="sr-only">
+                {doorClickedOpen ? 'Enter workspace portal' : 'Open meeting room door'}
+              </span>
+            </button>
+          </div>
+
+          {/* Architectural Wall Copy */}
+          <div className="door-wall-copy pointer-events-none absolute inset-x-0 top-24 z-10 mx-auto max-w-6xl px-5 sm:top-auto sm:px-10">
+            <div
+              className="pointer-events-auto max-w-md rounded-3xl p-6 sm:p-7"
+              style={{
+                background: 'linear-gradient(145deg, rgba(247, 248, 244, 0.84) 0%, rgba(232, 238, 228, 0.64) 100%)',
+                backdropFilter: 'blur(18px)',
+                WebkitBackdropFilter: 'blur(18px)',
+                border: '1px solid rgba(255, 255, 255, 0.78)',
+                boxShadow: '0 22px 48px -12px rgba(22, 43, 34, 0.16)',
+              }}
+            >
+              <span
+                className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em]"
+                style={{ color: 'var(--sf-forest)' }}
+              >
+                <span className="h-px w-6" style={{ background: 'var(--sf-forest)' }} />
+                Your Space Awaits
+              </span>
+              <h2
+                className="mt-3 text-balance text-2xl font-bold leading-[1.08] tracking-[-0.03em] sm:text-3xl"
+                style={{ color: 'var(--sf-navy)' }}
+              >
+                One door away from a calmer workday.
+              </h2>
+              <p className="mt-3 text-sm leading-6" style={{ color: 'var(--sf-ink-muted)' }}>
+                Click the door to open it, or continue scrolling to step inside and access your organization&apos;s
+                reservation portal.
+              </p>
+              <button
+                type="button"
+                onClick={handleDoorClick}
+                className="forest-pill-button mt-5 inline-flex min-h-[42px] items-center gap-2 px-5 py-2.5 text-xs"
+              >
+                <DoorOpen className="h-4 w-4" aria-hidden="true" />
+                <span>{doorClickedOpen ? 'Entering workspace…' : 'Open the door'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Soft radial threshold vignette as camera enters the dark doorway */}
+          <div
+            aria-hidden="true"
+            className="door-dark-veil pointer-events-none absolute inset-0 z-20 opacity-0"
+            style={{
+              background: 'radial-gradient(circle at 65.6% 49%, rgba(20, 27, 23, 0.72) 0%, rgba(20, 27, 23, 0.94) 75%)',
+            }}
+          />
+        </section>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════════════════════
+          PHASE 4: CENTERED GLASSMORPHISM 2.0 LOGIN PORTAL
+         ════════════════════════════════════════════════════════════════════════ */}
+      <section id="portal-login" aria-label="Workspace sign-in portal" className="relative z-10">
+        <AuthGlassPortal skipEntrance />
+      </section>
+
+      {/* ════════════════════════════════════════════════════════════════════════
+          PHASE 6: FOUR ORGANIZATION CAPABILITY CARDS (ORBIT PRESENTATION)
+         ════════════════════════════════════════════════════════════════════════ */}
+      <OrbitFeatureCards />
+
+      {/* ════════════════════════════════════════════════════════════════════════
+          PHASE 8: FOOTER
+         ════════════════════════════════════════════════════════════════════════ */}
+      <LandingFooter onNavigateSection={navigateToSection} />
+    </div>
   );
 }
